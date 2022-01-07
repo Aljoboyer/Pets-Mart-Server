@@ -1,0 +1,153 @@
+const express = require('express');
+const { MongoClient } = require('mongodb');
+const cors = require('cors');
+const app = express();
+const ObjectId = require('mongodb').ObjectId;
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET)
+const fileUpload = require('express-fileupload');
+const port = process.env.PORT || 5000;
+
+//middleware 
+app.use(cors()); 
+app.use(express.json({limit: '50mb'}));
+app.use(fileUpload());
+app.use(express.urlencoded({limit: '50mb'}));
+// app.use(express.urlencoded({limit: '50mb'}));  {limit: '50mb'}
+
+const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.USER_PASS}@cluster0.obwta.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function run(){
+    try{
+        await client.connect(); 
+
+        const database = client.db('PetsDB');
+        const PetsCollection = database.collection('PetsCollection');
+        const AccessoriesOrderCollection = database.collection('AccessoriesOrderCollection');
+        const UserCollection = database.collection('UserCollection');
+        const PaymentStatusCollection = database.collection('PaymentStatusCollection');
+        const PetOrderCollection = database.collection('PetOrderCollection');
+    
+        //-----------Other-----------//
+            app.post('/saveuser', async(req, res) => {
+                const data = req.body;
+                const result = await UserCollection.insertOne(data);
+                res.json(result)
+            })
+        //----------OTHER END--------//
+    //---------------Admin---------------//
+        //admin posting pet data to database
+        app.post('/Petspost', async(req, res) => {
+            const data  = req.body;
+            const imgdata = req.files.img.data;
+
+            const encodedpic = imgdata.toString('base64');
+            const img = Buffer.from(encodedpic, 'base64');
+
+            const petdata = {...data, img};
+            const result = await PetsCollection.insertOne(petdata);
+            res.json(result)
+        })
+        //admin getting all data for manage 
+        app.get('/GetAllData', async (req, res) => {
+            const cursor = PetsCollection.find({});
+            const pets = await cursor.toArray()
+            res.send(pets)
+        })
+    //---------------Admin END---------------//
+ 
+    //-------------USER---------------------//
+        //user geting all pet data
+        app.get('/GetAllPets', async (req, res) => {
+            const query = {category: 'pets'}
+            const result = await PetsCollection.find(query).toArray()
+            res.send(result)
+        })  
+        //geting all pet accessories
+        app.get('/getAllAccessories', async (req, res) => {
+            const query = {category: 'crate'}
+            const result = await PetsCollection.find(query).toArray();
+            const query2 = {category: 'food'}
+            const result2 = await PetsCollection.find(query2).toArray();
+            const newarr = [...result, ...result2]
+            res.send(newarr)
+        })
+        //order cart posting to database
+        app.post('/PostCart', async(req, res) => {
+            const data = req.body;
+            const result = await AccessoriesOrderCollection.insertMany(data)
+            res.json(result) 
+        })
+        //posting pet order
+        app.post('/PetOrderPost', async (req, res) => {
+            const pet = req.body;
+            const result = await PetOrderCollection.insertOne(pet);
+            res.json(result)
+        })
+        //geting accessories order 
+        app.get('/GetAccessoriesOrder', async (req, res) => {
+            const cursor = AccessoriesOrderCollection.find({})
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        //geting pet order 
+        app.get('/GetPetOrder', async (req, res) => {
+        const cursor = PetOrderCollection.find({})
+        const result = await cursor.toArray();
+        res.send(result)
+        })
+         //deleting pet order 
+         app.delete('/PetOrderDelete/:id', async (req, res) => {
+            const id = req.params.id
+
+            const query = {_id: id};
+            const result = await PetOrderCollection.deleteOne(query)
+            res.send(result)
+        }
+        )
+        //deleting accessories order 
+        app.delete('/accessoriesOrderDelete/:id', async (req, res) => {
+        const id = req.params.id
+        const query = {_id: id};
+        const result = await AccessoriesOrderCollection.deleteOne(query)
+        res.send(result)
+    }
+         )
+        //---------stripe payment system---------//
+        //payment intent
+        app.post('/create-payment-intent', async (req, res) => {
+            const paymentinfo = req.body;
+            const payment = parseInt(paymentinfo.alltotalamount) * 100;
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: 'usd',
+                amount: payment,
+                payment_method_types: ['card']
+                });
+            res.send({
+            clientSecret: paymentIntent.client_secret
+            }); 
+        })
+        app.post('/paymentstatus', async (req, res) => {
+            const data = req.body;
+            const result = await PaymentStatusCollection.insertOne(data);
+            res.json(result)
+        })
+    //------------USER END-----------------//
+    } 
+    finally{ 
+        
+    }
+}
+
+run().catch(console.dir)
+
+app.get('/', (req, res) => {
+    res.send('Pet Shop Server is connected');
+})
+
+app.listen(port, (req, res) => {
+    console.log('Pet Shop Port is', port)
+})
+//done
