@@ -112,8 +112,15 @@ async function run(){
         const query = {_id: id};
         const result = await AccessoriesOrderCollection.deleteOne(query)
         res.send(result)
-    }
-         )
+         }
+        )
+        //user geting search data
+        app.get('/GetSearchPets', async (req, res) => {
+            const data = req.query.searchdata
+            const query = {type: data.type, age: data.age, gender: data.gender}
+            const result = await PetOrderCollection.find(query).toArray()
+            res.send(result)
+        })
         //---------stripe payment system---------//
         //payment intent
         app.post('/create-payment-intent', async (req, res) => {
