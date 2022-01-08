@@ -66,7 +66,7 @@ async function run(){
         })  
         //geting all pet accessories
         app.get('/getAllAccessories', async (req, res) => {
-            const query = {category: 'crate'}
+            const query = {category: 'accessories'}
             const result = await PetsCollection.find(query).toArray();
             const query2 = {category: 'food'}
             const result2 = await PetsCollection.find(query2).toArray();
@@ -114,13 +114,14 @@ async function run(){
         res.send(result)
          }
         )
-        //user geting search data
-        app.get('/GetSearchPets', async (req, res) => {
-            const data = req.query.searchdata
-            const query = {type: data.type, age: data.age, gender: data.gender}
-            const result = await PetOrderCollection.find(query).toArray()
-            res.send(result)
-        })
+        //geting pet dog
+        app.get('/GetPetsType', async (req, res) => {
+        const data = req.query.filterdata
+        const newdata = JSON.parse(data)
+        const query = {category: newdata.category, type: newdata.type}
+        const result = await PetsCollection.find(query).toArray()
+        res.send(result)
+        })     
         //---------stripe payment system---------//
         //payment intent
         app.post('/create-payment-intent', async (req, res) => {
