@@ -35,6 +35,13 @@ async function run(){
                 const result = await UserCollection.insertOne(data);
                 res.json(result)
             })
+            //checking the user role
+            app.get('/checkUser', async (req, res) => {
+                const email = req.query.email
+                const query = {email: email}
+                const result = await UserCollection.findOne(query)
+                res.send(result)
+            })
         //----------OTHER END--------//
     //---------------Admin---------------//
         //admin posting pet data to database
@@ -54,6 +61,45 @@ async function run(){
             const cursor = PetsCollection.find({});
             const pets = await cursor.toArray()
             res.send(pets)
+        })
+        //admin geting all pet order 
+        app.get('/GetAllPetOrder', async(req, res) => {
+            const cursor = PetOrderCollection.find({})
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+        //admin accepting pet order 
+        app.put('/AcceptPet/:id', async (req, res) => {
+            const id = req.params.id
+            const query = {_id: id}
+            const option = {upsert: true}
+            const updatedoc = {
+                $set: {
+                    status: 'Approved'
+                }
+            }
+            const result = await PetOrderCollection.updateOne(query,updatedoc, option)
+            res.json(result)
+        })
+        //admin geting all accessories
+        app.get('/GetAllAccessoriesOrder', async (req, res) => {
+
+            const cursor = AccessoriesOrderCollection.find({})
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+        //admin making another admin
+        app.put('/MakeAnAdmin', async (req, res) => {
+            const email = req.query.email
+            const query = {email: email}
+            const option = {upsert: true}
+            const updatedoc = {
+                $set : {
+                    role: 'admin'
+                }
+            }
+            const result = await UserCollection.updateOne(query, updatedoc, option);
+            res.json(result)
         })
     //---------------Admin END---------------//
  
@@ -87,15 +133,17 @@ async function run(){
         })
         //geting accessories order 
         app.get('/GetAccessoriesOrder', async (req, res) => {
-            const cursor = AccessoriesOrderCollection.find({})
-            const result = await cursor.toArray();
+            const email = req.query.email
+            const query = {email: email}
+            const result = await AccessoriesOrderCollection.find(query).toArray()
             res.send(result)
         })
         //geting pet order 
         app.get('/GetPetOrder', async (req, res) => {
-        const cursor = PetOrderCollection.find({})
-        const result = await cursor.toArray();
-        res.send(result)
+            const email = req.query.email
+            const query = {email: email}
+            const result = await PetOrderCollection.find(query).toArray()
+            res.send(result)
         })
          //deleting pet order 
          app.delete('/PetOrderDelete/:id', async (req, res) => {
