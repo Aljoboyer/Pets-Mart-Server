@@ -197,7 +197,7 @@ async function run(){
     }
 }
 
-run().catch(console.dir)
+run()
 
 app.get('/', (req, res) => {
     res.send('Hello ..! Pet-Shop Server is connected');
