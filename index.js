@@ -200,7 +200,7 @@ async function run(){
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-    res.send('Hello ..! Pet Shop Server is connected');
+    res.send('Hello ..! Pet-Shop Server is connected');
 })
 
 app.listen(port, (req, res) => {
