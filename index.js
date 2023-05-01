@@ -47,10 +47,6 @@ async function run(){
                 res.send(result)
             })
 
-            app.get('/serverConnect', async (req, res) => {
-
-                res.send({connect: "Your Server is connected"})
-            })
         //----------OTHER END--------//
     //---------------Admin---------------//
         //admin posting pet data to database
