@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ServerApiVersion  } = require('mongodb');
 const cors = require('cors');
 const app = express();
 const ObjectId = require('mongodb').ObjectId;
@@ -15,8 +15,9 @@ app.use(fileUpload());
 app.use(express.urlencoded({limit: '50mb'}));
 // app.use(express.urlencoded({limit: '50mb'}));  {limit: '50mb'}
 
-const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.USER_PASS}@cluster0.obwta.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.USER_PASS}@cluster0.obwta.mongodb.net/
+PetsDB?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true , serverApi: ServerApiVersion.v1});
 
 async function run(){
     try{
@@ -41,6 +42,11 @@ async function run(){
                 const query = {email: email}
                 const result = await UserCollection.findOne(query)
                 res.send(result)
+            })
+
+            app.get('/serverConnect', async (req, res) => {
+
+                res.send({connect: "Your Server is connected"})
             })
         //----------OTHER END--------//
     //---------------Admin---------------//
