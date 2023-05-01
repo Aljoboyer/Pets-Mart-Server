@@ -15,9 +15,12 @@ app.use(fileUpload());
 app.use(express.urlencoded({limit: '50mb'}));
 // app.use(express.urlencoded({limit: '50mb'}));  {limit: '50mb'}
 
-const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.USER_PASS}@cluster0.obwta.mongodb.net/
+const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.PASS_DB}@cluster0.obwta.mongodb.net/
 PetsDB?retryWrites=true&w=majority`;
+
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true , serverApi: ServerApiVersion.v1});
+  
 
 async function run(){
     try{
@@ -204,10 +207,6 @@ async function run(){
 }
 
 run().catch(console.dir)
-
-app.get('/conn', (req, res) => {
-    res.send('Hello ..! Pet-Shop Server is connected again for checking');
-})
 
 app.get('/', (req, res) => {
     res.send('Hello ..! Pet-Shop Server is connected');
