@@ -205,6 +205,10 @@ async function run(){
 
 run().catch(console.dir)
 
+app.get('/conn', (req, res) => {
+    res.send('Hello ..! Pet-Shop Server is connected again for checking');
+})
+
 app.get('/', (req, res) => {
     res.send('Hello ..! Pet-Shop Server is connected');
 })
