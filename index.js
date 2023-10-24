@@ -16,26 +16,21 @@ app.use(express.urlencoded({limit: '50mb'}));
 // app.use(express.urlencoded({limit: '50mb'}));  {limit: '50mb'}
 
 // database connetion
-// const connectDB = require("./src/connection/connectDB");
-// connectDB()
+const connectDB = require("./src/connection/connectDB");
+connectDB()
 
 //Route
 const userRoutes = require("./src/routes/user.routes");
+const petsRoutes = require("./src/routes/pets.routes");
 
 app.use("/user", userRoutes);
+app.use("/pets", petsRoutes);
+
 
 
 // async function run(){
 //     try{
     
-   
-//             //checking the user role
-//             app.get('/checkUser', async (req, res) => {
-//                 const email = req.query.email
-//                 const query = {email: email}
-//                 const result = await UserCollection.findOne(query)
-//                 res.send(result)
-//             })
 
 //         //----------OTHER END--------//
 //     //---------------Admin---------------//
@@ -99,33 +94,14 @@ app.use("/user", userRoutes);
 //     //---------------Admin END---------------//
  
 //     //-------------USER---------------------//
-//         //user geting all pet data
-//         app.get('/GetAllPets', async (req, res) => {
-//             const query = {category: 'pets'}
-//             const result = await PetsCollection.find(query).toArray()
-//             res.send(result)
-//         })  
-//         //geting all pet accessories
-//         app.get('/getAllAccessories', async (req, res) => {
-//             const query = {category: 'accessories'}
-//             const result = await PetsCollection.find(query).toArray();
-//             const query2 = {category: 'food'}
-//             const result2 = await PetsCollection.find(query2).toArray();
-//             const newarr = [...result, ...result2]
-//             res.send(newarr)
-//         })
+
 //         //order cart posting to database
 //         app.post('/PostCart', async(req, res) => {
 //             const data = req.body;
 //             const result = await AccessoriesOrderCollection.insertMany(data)
 //             res.json(result) 
 //         })
-//         //posting pet order
-//         app.post('/PetOrderPost', async (req, res) => {
-//             const pet = req.body;
-//             const result = await PetOrderCollection.insertOne(pet);
-//             res.json(result)
-//         })
+
 //         //geting accessories order 
 //         app.get('/GetAccessoriesOrder', async (req, res) => {
 //             const email = req.query.email
@@ -134,12 +110,7 @@ app.use("/user", userRoutes);
 //             res.send(result)
 //         })
 //         //geting pet order 
-//         app.get('/GetPetOrder', async (req, res) => {
-//             const email = req.query.email
-//             const query = {email: email}
-//             const result = await PetOrderCollection.find(query).toArray()
-//             res.send(result)
-//         })
+
 //          //deleting pet order 
 //          app.delete('/PetOrderDelete/:id', async (req, res) => {
 //             const id = req.params.id
@@ -157,14 +128,7 @@ app.use("/user", userRoutes);
 //         res.send(result)
 //          }
 //         )
-//         //geting pet dog
-//         app.get('/GetPetsType', async (req, res) => {
-//         const data = req.query.filterdata
-//         const newdata = JSON.parse(data)
-//         const query = {category: newdata.category, type: newdata.type}
-//         const result = await PetsCollection.find(query).toArray()
-//         res.send(result)
-//         })     
+
 //         //---------stripe payment system---------//
 //         //payment intent
 //         app.post('/create-payment-intent', async (req, res) => {
