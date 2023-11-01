@@ -12,7 +12,15 @@ const getAccessoriesOrderController = async (req, res) => {
     const result = await AccessoriesOrderCollection.find(query)
     res.send(result)
 }
+
+const deketeAccessoriesOrderController = async (req, res) => {
+    const id = req.params.id
+    const query = {_id: id};
+    const result = await AccessoriesOrderCollection.deleteOne(query)
+    res.send(result)
+}
 module.exports = {
     accessoriesCartAddController,
-    getAccessoriesOrderController
+    getAccessoriesOrderController,
+    deketeAccessoriesOrderController
   };
