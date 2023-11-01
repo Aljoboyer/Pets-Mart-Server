@@ -4,7 +4,6 @@ const cors = require('cors');
 const app = express();
 const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
-const stripe = require('stripe')(process.env.STRIPE_SECRET)
 const fileUpload = require('express-fileupload');
 const port = process.env.PORT || 5000;
 
@@ -22,10 +21,13 @@ connectDB()
 //Route
 const userRoutes = require("./src/routes/user.routes");
 const petsRoutes = require("./src/routes/pets.routes");
+const paymentRoutes = require("./src/routes/payments.routes");
+const accessoriesRoutes = require("./src/routes/accessories.routes");
 
 app.use("/user", userRoutes);
 app.use("/pets", petsRoutes);
-
+app.use("/payment", paymentRoutes);
+app.use("/accessories", accessoriesRoutes);
 
 
 // async function run(){
@@ -95,31 +97,12 @@ app.use("/pets", petsRoutes);
  
 //     //-------------USER---------------------//
 
-//         //order cart posting to database
-//         app.post('/PostCart', async(req, res) => {
-//             const data = req.body;
-//             const result = await AccessoriesOrderCollection.insertMany(data)
-//             res.json(result) 
-//         })
-
 //         //geting accessories order 
-//         app.get('/GetAccessoriesOrder', async (req, res) => {
-//             const email = req.query.email
-//             const query = {email: email}
-//             const result = await AccessoriesOrderCollection.find(query).toArray()
-//             res.send(result)
+//         app.get('/', async (req, res) => {
+//            
 //         })
-//         //geting pet order 
 
-//          //deleting pet order 
-//          app.delete('/PetOrderDelete/:id', async (req, res) => {
-//             const id = req.params.id
-
-//             const query = {_id: id};
-//             const result = await PetOrderCollection.deleteOne(query)
-//             res.send(result)
-//         }
-//         )
+//
 //         //deleting accessories order 
 //         app.delete('/accessoriesOrderDelete/:id', async (req, res) => {
 //         const id = req.params.id
@@ -129,26 +112,7 @@ app.use("/pets", petsRoutes);
 //          }
 //         )
 
-//         //---------stripe payment system---------//
-//         //payment intent
-//         app.post('/create-payment-intent', async (req, res) => {
-//             const paymentinfo = req.body;
-//             const payment = parseInt(paymentinfo.alltotalamount) * 100;
 
-//             const paymentIntent = await stripe.paymentIntents.create({
-//                 currency: 'usd',
-//                 amount: payment,
-//                 payment_method_types: ['card']
-//                 });
-//             res.send({
-//             clientSecret: paymentIntent.client_secret
-//             }); 
-//         })
-//         app.post('/paymentstatus', async (req, res) => {
-//             const data = req.body;
-//             const result = await PaymentStatusCollection.insertOne(data);
-//             res.json(result)
-//         })
 //     //------------USER END-----------------//
 //     } 
 //     finally{ 

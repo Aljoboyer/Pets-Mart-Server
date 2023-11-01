@@ -43,10 +43,19 @@ const getPetOrderController = async (req, res) => {
     res.send(result)
 };
 
+const petsOrderCancelController = async (req, res) => {
+    const id = req.params.id
+
+    const query = {_id: id};
+    const result = await PetOrderCollection.deleteOne(query)
+    res.send(result)
+};
+
   module.exports = {
     getAllPetsController,
     getPetAccessoriesController,
     getPetsByType,
     orderingPetsController,
-    getPetOrderController
+    getPetOrderController,
+    petsOrderCancelController
   };
