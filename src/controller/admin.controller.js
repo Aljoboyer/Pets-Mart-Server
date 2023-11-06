@@ -20,12 +20,13 @@ const postPetController = async (req, res) => {
 };
 
 const getPetController = async (req, res) => {
-    const allData = PetsCollection.find({});
+    console.log('hitted get all data')
+    const allData = await PetsCollection.find({});
     res.send(allData)
 };
 
 const getPetOrderController = async (req, res) => {
-    const allData = PetOrderCollection.find({})
+    const allData = await PetOrderCollection.find({})
     res.send(allData)
 };
 
@@ -43,7 +44,7 @@ const acceptPetOrderController = async (req, res) => {
 };
 
 const getAccessoriesOrderController = async (req, res) => {
-    const allData = AccessoriesOrderCollection.find({});
+    const allData = await AccessoriesOrderCollection.find({});
     res.send(allData)
 };
 
